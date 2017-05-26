@@ -1,0 +1,39 @@
+      <div class="login_wrapper" >
+        <div class="animate form login_form">
+          <section class="login_content">
+           
+              <h1 style="margin-top:-25px;">Login Form</h1>
+			  
+              <div>
+                <input type="text" ng-model="login.username" class="form-control" placeholder="Username" required="" />
+              </div>
+			  <br>
+              <div>
+                <input type="password" ng-model="login.password" class="form-control" placeholder="Password" required="" />
+              </div>
+			  <br>
+              <div>
+                <input type="button" value="Login" style="background-color:rgba(0, 170, 255, 0.72);width:100%;" ng-click="login.adminLogin()"  class="btn btn-default submit">
+               
+              </div>
+
+              <div class="clearfix"></div>
+
+              <div class="separator">
+
+                <div class="clearfix"></div>
+                <br />
+					
+						<div ng-init="login.status=0" ng-if="login.status" class="alert alert-danger alert-dismissible fade in" role="alert">
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+							</button>
+							<strong> {{loginMessage}}!</strong>
+						</div>
+                <div>
+                  <h1><i class="fa fa-paw"></i>  {{appName}} ! Admin Panel</h1>
+                  <p>©2017 All Rights Reserved. {{appName}}!</p>
+                </div>
+              </div>
+          </section>
+        </div>
+      </div>

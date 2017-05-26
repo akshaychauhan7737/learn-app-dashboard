@@ -1,0 +1,109 @@
+<div  class="row" >
+		  <div class="col-md-6">
+			<div ng-repeat="story in stor" ng-click="Editstory.SelectStory(story)" style="color:white;text-align:center;margin:10px;padding:5px;background-color:red;width:80%;height:40px;">
+				{{story.attributes.name}}
+			</div>
+			
+			 <div class="row" >
+				<div style="margin-left:auto;margin-right:auto;" class="btn-toolbar">
+				   <div class="btn-group" style="margin-left:auto;margin-right:auto;">
+						<button class="btn btn-info" data-ng-repeat="i in noStories" ng-click="Editstory.pagination(i)" type="button">{{i+1}}</button>
+				   </div>
+				</div>
+			 </div>
+			</div>
+			
+			  <div ng-if="storyTouched" class="col-md-6 col-xs-12">
+                <div class="x_panel">
+                  <div class="x_content">
+                    <br />
+                    <form class="form-horizontal form-label-left">
+
+                      <div class="form-group">
+						<center>					  
+							<label style="font-size:30px;"> Story</label>
+					   </center>
+					   <h5>---------------------------------------------------------------------------</h5>
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Story Name</label>
+                        <div class="col-md-9 col-sm-9 col-xs-12">
+                          <input type="text"  ng-model="Editstory.storyName" class="form-control" placeholder="Default Input">
+                        </div>
+                      </div>
+
+                      <div class="control-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Tags</label>
+                        <div class="col-md-9 col-sm-9 col-xs-12">
+                          <input id="tags_1" type="text" ng-model="Editstory.storyTags" class="tags form-control"  />
+                          <div id="suggestions-container" style="position: relative; float: left; width: 250px; margin: 10px;"></div>
+                        </div>
+                      </div>
+					  
+					   <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Moral</label>
+                        <div class="col-md-9 col-sm-9 col-xs-12">
+                          <input type="text" ng-model="Editstory.storyMoral" class="form-control" placeholder="Default Input">
+                        </div>
+                      </div>
+            
+					
+
+
+
+                      <div class="ln_solid"></div>
+                      <div class="form-group">
+                        <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3">
+                         
+                          <button type="submit" ng-click="Editstory.SAVE()" class="btn btn-success">Submit</button>
+                        </div>
+                      </div>
+
+                    </form>
+                  </div>
+                </div>
+              </div>
+			  
+			   <div ng-if="storyTouched" class="col-md-6 col-xs-12">
+                <div class="x_panel">
+                  <div class="x_content">
+                    <br />
+                    <form class="form-horizontal form-label-left">
+					<center>
+					  <label style="font-size:25px;">Slides</label>
+					  </center>
+					   <h5>---------------------------------------------------------------------------</h5>
+					<div class="form-group">
+						<img  type="file"  src="{{slideURL}}" style="width: 200px; margin-left: 115px; margin-right:  auto; position:relative; height:150px;"></img>
+							{{EditImageMessage}}
+							<input id="profilePhotoFileUpload"  type="file" style="float:right;"  name="slideImage">
+							<input type="button"  ng-click="Editstory.editImage()" value="Upload Image">
+						<br>
+						<textarea  ng-model="Editstory.slideDescription" class="form-control" style="margin:10px; margin-laft:10px; position: relative;"rows="3" cols="5" placeholder="Story Description"></textarea>
+					</div>
+					
+					
+                      <div class="form-group">
+					  
+                        <div class="row" >
+							<div style="margin-left:auto;margin-right:auto;" class="btn-toolbar">
+								Slides:
+								<div class="btn-group scrollmenu" >
+									<button class="btn btn-info" data-ng-repeat="slide in Slidecount" ng-click="Editstory.goToSlide(slide)" type="button">{{slide+1}}</button>
+								</div>
+							</div>
+						</div>
+                      </div>
+					   <div class="ln_solid"></div>
+                      <div class="form-group">
+                        <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3">
+                         
+                          <button type="submit" ng-click="Editstory.SAVESLIDE()" class="btn btn-success">Submit</button>
+                        </div>
+                      </div>
+
+					</form>
+					</div>
+					</div>
+					</div>
+
+	  </div>
+	   
