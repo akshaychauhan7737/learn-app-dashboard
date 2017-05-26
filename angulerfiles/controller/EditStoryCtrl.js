@@ -74,11 +74,11 @@ app.controller('EditSoCtrl', function (AppConfig,$timeout,$rootScope,$scope,$sta
 						$timeout(function(){
 								$scope.storyTouched=true;
 								$scope.slidesFetched=slidesFetched;
-								$scope.storyName=Story.get("name");
-								$scope.storyMoral=Story.get("Moral");
-								$scope.storyTags="";
+								$scope.Editstory.storyName=Story.get("name");
+								$scope.Editstory.storyMoral=Story.get("Moral");
+								$scope.Editstory.storyTags="";
 								EditStory.goToSlide(0);
-								$scope.storyTags=Story.get("tag").join(" , ");
+								$scope.Editstory.storyTags=Story.get("tag").join(" , ");
 								},200);
 						
 					},
@@ -91,7 +91,7 @@ app.controller('EditSoCtrl', function (AppConfig,$timeout,$rootScope,$scope,$sta
 		{
 				$scope.slideselectedIndex=index;
 				$scope.slideURL=$scope.slidesFetched[index].attributes.url;
-				$scope.slideDescription=$scope.slidesFetched[index].attributes.description;
+				$scope.Editstory.slideDescription=$scope.slidesFetched[index].attributes.description;
 		}
 		
 		EditStory.SAVE= function()
@@ -99,9 +99,9 @@ app.controller('EditSoCtrl', function (AppConfig,$timeout,$rootScope,$scope,$sta
 					console.log("Hi");
 					
 					$scope.StorySelected.save(
-						{name:$scope.storyName,
-						 Moral:$scope.storyMoral,
-						 tag:$scope.storyTags.split(',')
+						{name:$scope.Editstory.storyName,
+						 Moral:$scope.Editstory.storyMoral,
+						 tag:$scope.Editstory.storyTags.split(',')
 						},
 						{success:function()
 						{
@@ -122,7 +122,7 @@ app.controller('EditSoCtrl', function (AppConfig,$timeout,$rootScope,$scope,$sta
 					
 					$scope.slidesFetched[$scope.slideselectedIndex].save(
 						{
-							descriptions:$scope.slideDescription
+							description:$scope.Editstory.slideDescription
 						},
 						{success:function()
 						{
