@@ -11,6 +11,13 @@ app.controller('EditSoCtrl', function (AppConfig,$timeout,$rootScope,$scope,$sta
 	var offset = 0;
 	var noStories=0;
 	$scope.storyTouched=false;
+		
+	EditStory.goToSlide=function(slide)
+		{
+				$scope.selectedSlide=slide;
+				$scope.slideURL=slide.attributes.url;
+				$scope.Editstory.slideDescription=slide.attributes.description;
+		}
 	
 			var Storys=Parse.Object.extend("Story");
 			var query=new Parse.Query(Storys);
@@ -58,26 +65,33 @@ app.controller('EditSoCtrl', function (AppConfig,$timeout,$rootScope,$scope,$sta
 			var SlidesQuery=new Parse.Query(Slides);
 				$scope.StorySelected=Story;
 				SlidesQuery.equalTo("storyID",Story);
+				$scope.slideURL="";
+				$scope.Editstory.slideDescription="";
 				SlidesQuery.count({
 				success: function(count){
-					var countArray=[];
-					$timeout(function(){
-							Slidecount=count; 
-							for(var i=0;i<Slidecount;i++){countArray.push(i);}
-							$scope.Slidecount=countArray;
-						},200);
+					
 					  }
 				});
 				SlidesQuery.find({
 					success:function(slidesFetched){
-						
+						//console.log(slidesFetched);
 						$timeout(function(){
-								$scope.storyTouched=true;
 								$scope.slidesFetched=slidesFetched;
+								var firstSlide=500;
+								//console.log(firstSlide,slidesFetched.length);
+								// for(var i=0;i<slidesFetched.length;i++)
+								// {
+									// if(firstSlide<=$scope.slidesFetched[i].attributes.slideOrder)
+									// {
+										// EditStory.goToSlide($scope.slidesFetched[i]);
+										// firstslide=$scope.slidesFetched[i].attributes.slideOrder;
+										// console.log($scope.slidesFetched[i].attributes.slideOrder);
+									// }
+								// }
+								$scope.storyTouched=true;
 								$scope.Editstory.storyName=Story.get("name");
 								$scope.Editstory.storyMoral=Story.get("Moral");
 								$scope.Editstory.storyTags="";
-								EditStory.goToSlide(0);
 								$scope.Editstory.storyTags=Story.get("tag").join(" , ");
 								},200);
 						
@@ -87,12 +101,7 @@ app.controller('EditSoCtrl', function (AppConfig,$timeout,$rootScope,$scope,$sta
 					}
 				});
 		}
-		EditStory.goToSlide=function(index)
-		{
-				$scope.slideselectedIndex=index;
-				$scope.slideURL=$scope.slidesFetched[index].attributes.url;
-				$scope.Editstory.slideDescription=$scope.slidesFetched[index].attributes.description;
-		}
+	
 		
 		EditStory.SAVE= function()
 				{
@@ -118,9 +127,7 @@ app.controller('EditSoCtrl', function (AppConfig,$timeout,$rootScope,$scope,$sta
 				}
 				EditStory.SAVESLIDE= function()
 				{
-					console.log("Hi");
-					
-					$scope.slidesFetched[$scope.slideselectedIndex].save(
+					$scope.selectedSlide.save(
 						{
 							description:$scope.Editstory.slideDescription
 						},
@@ -156,67 +163,83 @@ app.controller('EditSoCtrl', function (AppConfig,$timeout,$rootScope,$scope,$sta
 									var URL = parseFile.url();
 											 // console.log(URL);
 											 // console.log("getting the slide and edit the url and save it",$scope.slideselectedID);
-											  slide.get($scope.slidesFetched[$scope.slideselectedIndex].id,{
-												success:function(CurrSlide){
-													CurrSlide.save({url:URL},{
-															success:function(){
-																	console.log("success");
-																	$timeout(EditStory.goToSlide($scope.slideselectedIndex),200);
-																}
-														});
-												},
-												error:function(){}
-											  });
+										$scope.selectedSlide.save({
+											url:URL
+										},{
+											success:function(){alert("Successfully uploaded image");console.log("successfuly added url");},
+											error:function(){console.log("Failed slide");}
+										});
 								  },
 								function(error){console.log("failed to upload image");}
 							 );	 
 					}
-					
-			
-				
-				
-				/*var ImageTable=Parse.Object.extend("Images");
-				var ImageQuery=new Parse.Query(ImageTable);
-					ImageQuery.equalTo("url",$scope.slideURL)
-					ImageQuery.find({
-						success:function(myObject){
-								myObject.destroy();
-							}
-						});
-			var objImageTable=new ImageTable(ImageTable);
-			
-			var fileUploadControl = $("#profilePhotoFileUpload")[0];
-			if (fileUploadControl.files.length > 0) {
-			  var file = fileUploadControl.files[0];
-			  var name = "Slide Image.jpg";
-
-			  var parseFile = new Parse.File(name, file);
-			     parseFile.save().then(
-					function(parseFile) {
-						
-					   var URL = parseFile.url();
-							console.log(URL);
-							
-							$scope.slidesFetched.save({
-								image:objImageTable
-								},{
-								error:function(){console.log("error while adding image object");}
-							});
-							
-							objImageTable.save({url:URL},{
-								success:function(imgTable){$scope.slidesFetched.save();},
-								error:function(){console.log("error");},
-							});
-						
-					  }, 
-					  function(error) {
-						// The file either could not be read, or could not be saved to Parse.
-						alert("Error: " + error.code + " " + error.message);
-					  });
-			}
-			else $scope.EditImageMessage="Somthing is wrong with the file";
-			*/
 		}
+		
+		EditStory.addWord=function()
+		{
+			var Words = Parse.Object.extend("Words");
+			var word=new Words;
+
+			word.save({
+				word:EditStory.Word,
+				meaning:EditStory.meaning
+			  },{
+				success:function(word){
+					$timeout(function(){
+						$("#wordModal").modal("hide");
+						$scope.Editstory.slideDescription=$scope.Editstory.slideDescription.replace(EditStory.Word," #_ "+EditStory.Word+" _# ");
+										},20);
+					EditStory.SAVESLIDE();
+					 alert('Word Saved: ' + word.get("meaning"));
+					 
+					Console.log("Word Saved");
+					},
+				error:function(error){
+					$("#wordModal").modal("hide");
+					// alert('Word not saved  ' + error.message);
+					console.log("Failed to save word");
+					}
+			});
+			
+		}
+		
+		EditStory.highLightWord=function(){
+			var wordToHighLight = document.getElementById('wordS').value;
+			wordToHighLight = wordToHighLight.trim();
+			//checking for word entry in the Words Table
+			var Words = Parse.Object.extend("Words");
+				WordQuery=new Parse.Query(Words);
+				WordQuery.equalTo("word",wordToHighLight);
+				WordQuery.count({
+				success: function(count){
+					if(count>0){
+								if(!wordToHighLight.match("#_") || !wordToHighLight.match("_#")){
+									$timeout(function(){
+										$scope.Editstory.slideDescription=$scope.Editstory.slideDescription.replace(wordToHighLight," #_ "+wordToHighLight+" _# ");
+										},20);
+										EditStory.SAVESLIDE();
+									}else $scope.Editstory.slideDescriptionMessage="You Did Something Wrong";
+								console.log("word found");
+								$scope.Editstory.wordFound=true;
+							}else 
+							{
+								$scope.Editstory.wordFound=false;
+								$timeout(function(){
+										EditStory.Word=wordToHighLight;
+										},200);
+								
+								$("#wordModal").modal("show");
+								Editstory.meaning="";
+								//console.log("word not found",EditStory.Word);
+							}
+					  }
+				});
+				
+				
+				
+				
+				
+		};
 		
     /*--------------------------------A P I  C A L L S----------------------------------------------*/
 
