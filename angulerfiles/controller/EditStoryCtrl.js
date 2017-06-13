@@ -76,23 +76,13 @@ app.controller('EditSoCtrl', function (AppConfig,$timeout,$rootScope,$scope,$sta
 					success:function(slidesFetched){
 						//console.log(slidesFetched);
 						$timeout(function(){
-								$scope.slidesFetched=slidesFetched;
+									$scope.slidesFetched=slidesFetched;
 								var firstSlide=500;
-								//console.log(firstSlide,slidesFetched.length);
-								// for(var i=0;i<slidesFetched.length;i++)
-								// {
-									// if(firstSlide<=$scope.slidesFetched[i].attributes.slideOrder)
-									// {
-										// EditStory.goToSlide($scope.slidesFetched[i]);
-										// firstslide=$scope.slidesFetched[i].attributes.slideOrder;
-										// console.log($scope.slidesFetched[i].attributes.slideOrder);
-									// }
-								// }
-								$scope.storyTouched=true;
-								$scope.Editstory.storyName=Story.get("name");
-								$scope.Editstory.storyMoral=Story.get("Moral");
-								$scope.Editstory.storyTags="";
-								$scope.Editstory.storyTags=Story.get("tag").join(" , ");
+									$scope.storyTouched=true;
+									$scope.Editstory.storyName=Story.get("name");
+									$scope.Editstory.storyMoral=Story.get("Moral");
+									$scope.Editstory.storyTags="";
+									$scope.Editstory.storyTags=Story.get("tag").join(" , ");
 								},200);
 						
 					},
@@ -127,12 +117,22 @@ app.controller('EditSoCtrl', function (AppConfig,$timeout,$rootScope,$scope,$sta
 				}
 				EditStory.SAVESLIDE= function()
 				{
+					
+					var relation=$scope.StorySelected.relation("slide");
 					$scope.selectedSlide.save(
 						{
 							description:$scope.Editstory.slideDescription
 						},
-						{success:function()
+						{success:function(slide)
 						{
+							relation.add(slide);
+							$scope.StorySelected.save(null,{
+								success:function(){
+
+									console.log("hey");
+								}
+
+							});
 							console.log("slides saved");
 						
 						},
@@ -179,12 +179,20 @@ app.controller('EditSoCtrl', function (AppConfig,$timeout,$rootScope,$scope,$sta
 		{
 			var Words = Parse.Object.extend("Words");
 			var word=new Words;
-
+			var Wrelation = $scope.StorySelected.relation("word");
 			word.save({
 				word:EditStory.Word,
 				meaning:EditStory.meaning
 			  },{
 				success:function(word){
+					Wrelation.add(word);
+					$scope.StorySelected.save(null,{
+						success:function(){
+							console.log("story saved");
+
+						}
+
+					});
 					$timeout(function(){
 						$("#wordModal").modal("hide");
 						$scope.Editstory.slideDescription=$scope.Editstory.slideDescription.replace(EditStory.Word," #_ "+EditStory.Word+" _# ");
